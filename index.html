@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>my profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            overflow-x: hidden;
+            background: #1a1a2e;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        .background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar h2 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #fff, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #f093fb, #fff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Content */
+        .content {
+            padding-top: 140px;
+            padding-bottom: 60px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .welcome-text {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            width: 90%;
+            max-width: 450px;
+            margin: 30px auto;
+            padding: 40px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: none;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .card.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            animation: cardPulse 0.6s ease;
+        }
+
+        @keyframes cardPulse {
+            0% { transform: scale(0.95); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .card h3 {
+            font-size: 32px;
+            margin-bottom: 25px;
+            background: linear-gradient(45deg, #fff, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(240, 147, 251, 0.5); }
+            50% { text-shadow: 0 0 30px rgba(240, 147, 251, 0.8); }
+        }
+
+        .card p {
+            font-size: 18px;
+            margin: 15px 0;
+            line-height: 1.8;
+            opacity: 0;
+            animation: fadeInText 0.5s ease forwards;
+            font-weight: 400;
+        }
+
+        .card p:nth-child(2) { animation-delay: 0.1s; }
+        .card p:nth-child(3) { animation-delay: 0.2s; }
+        .card p:nth-child(4) { animation-delay: 0.3s; }
+        .card p:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes fadeInText {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .card p strong {
+            color: #f093fb;
+            font-weight: 600;
+        }
+
+        /* Icon styling */
+        .icon {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* Hover effect for card */
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                font-size: 14px;
+            }
+
+            .welcome-text {
+                font-size: 32px;
+            }
+
+            .card {
+                padding: 30px 25px;
+                width: 95%;
+            }
+
+            .card h3 {
+                font-size: 26px;
+            }
+
+            .card p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background - GANTI "a3.gif" dengan path GIF Anda -->
+    <div class="background" id="bg">
+        <img src="D:\a3 up\assets\a3.gif" alt="Ocean background">
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h2>>ᴗ< m y   w e b</h2>
+        <div class="nav-links">
+            <a onclick="showCard('profil')">👤 Profil</a>
+            <a onclick="showCard('pendidikan')">🎓 Pendidikan</a>
+            <a onclick="showCard('kontak')">📱 Kontak</a>
+            <a onclick="showCard('lainnya')">💫 Lainnya</a>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div style="width: 100%;">
+            <h1 class="welcome-text" id="welcomeText">H E L L O</h1>
+
+            <div id="profil" class="card">
+                <h3>Profil Saya</h3>
+                <p><strong>Nama:</strong> Ahmad</p>
+                <p><strong>Umur:</strong> 19 Tahun</p>
+                <p><strong>Status:</strong> Mahasiswa Aktif</p>
+            </div>
+
+            <div id="pendidikan" class="card">
+                <h3>Pendidikan</h3>
+                <p><strong>Program Studi:</strong> Teknik Informatika</p>
+                <p><strong>Universitas:</strong> STIKOM Muhammadiyah Batam</p>
+                <p><strong>Minat:</strong> Web Development & Design</p>
+            </div>
+
+     <div id="kontak" class="card">
+    <h3>Kontak</h3>
+
+    <p>
+        <span class="icon">📧</span>
+        <strong>Email:</strong>
+        <a href="mailto:ahmadalqossam2006@email.com">
+            ahmadalqossam2006@email.com
+        </a>
+    </p>
+
+    <p>
+        <span class="icon">💬</span>
+        <strong>WhatsApp:</strong>
+        <a href="https://wa.me/628157150215" target="_blank">
+            0815-7150-215
+        </a>
+    </p>
+
+    <p>
+        <span class="icon">📸</span>
+        <strong>Instagram:</strong>
+        <a href="https://instagram.com/ahmad_izzuddin_" target="_blank">
+            @ahmad_izzuddin_
+        </a>
+    </p>
+</div>
+
+
+
+            <div id="lainnya" class="card">
+                <h3>Lainnya</h3>
+                <p><strong>Hobi:</strong> Mencoba hal baru, Musik, Tidur, Menggambar</p>
+                <p><strong></strong> "Terimakasih! 🚀"</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const bg = document.getElementById('bg');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                bg.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Show card function with smooth animation
+        function showCard(id) {
+            const cards = document.querySelectorAll('.card');
+            const welcomeText = document.getElementById('welcomeText');
+            
+            // Hide all cards
+            cards.forEach(card => {
+                card.classList.remove('show');
+                setTimeout(() => {
+                    card.style.display = 'none';
+                }, 300);
+            });
+
+            // Hide welcome text
+            welcomeText.style.opacity = '0';
+            welcomeText.style.transform = 'translateY(-20px)';
+            
+            // Show selected card
+            setTimeout(() => {
+                const target = document.getElementById(id);
+                target.style.display = 'block';
+                setTimeout(() => {
+                    target.classList.add('show');
+                }, 50);
+            }, 300);
+        }
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                // Add active effect
+                document.querySelectorAll('.nav-links a').forEach(a => a.style.fontWeight = '500');
+                this.style.fontWeight = '700';
+            });
+        });
+    </script>
+
+</body>
+</html>
+```
+
+
+Struktur folder:
+```
+📁 Folder/
+  ├── index.html
+  └── a3.gif
